@@ -8,7 +8,6 @@
 #include <ctype.h>
 #include <time.h>
 
-
 void add_password();
 void click_img();
 void timer(int time);
@@ -344,10 +343,9 @@ int main()
                                 printf("Settings:\n\n");
                                 printf("  [0] <-- Go back to menu!\n\n");
                                 printf("  [1] Change master key\n");
-                                printf("  [2] Display current key\n");
-                                printf("  [3] Reset App\n");
-                                printf("  [4] Check for updates\n");
-                                printf("  [5] Uninstall MasterKey App\n");
+                                printf("  [2] Reset App\n");
+                                printf("  [3] Check for updates\n");
+                                printf("  [4] Uninstall MasterKey App\n");
                                 // printf("  [5] About\n");
                                 // printf("  [5] Developer Mode\n");
                                 printf("\nEnter your choice [0-5]: ");
@@ -366,11 +364,6 @@ int main()
                                     break;
 
                                 case '2':
-                                    system("clear");
-                                    display_current_password();
-                                    break;
-
-                                case '3':
                                     system("clear");
                                     printf("Note: Resetting the app will delete all your data like stored passwords, cashed images, etc.");
                                     printf("\n\nAre you sure you want to continue? [Y/n] : ");
@@ -406,14 +399,14 @@ int main()
                                     }
                                     break;
 
-                                case '4':
+                                case '3':
                                     // update
                                     system("clear");
                                     check_for_update();
                                     system("cd /home/$USER/Documents/.Program-Files/.MasterKey/ && chmod 500 .update.sh && bash .update.sh");
                                     break;
 
-                                case '5':
+                                case '4':
                                     system("clear");
                                     printf("Note: Deleting the app will clear all your app data, MasterKey program files and packages from your system\n");
                                     printf("\nIf you will be reinstalling the app in future make sure to backup your data by exporting the passwords from - \n[3]Edit dictionary > [4]Backup & Restore > [1]Export passwords.\n");
