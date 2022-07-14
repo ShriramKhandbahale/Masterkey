@@ -378,16 +378,17 @@ int main()
                                         sleep(3);
                                         system("clear");
                                         sleep(2);
-                                        system("echo \"Hi $USER, Welcome to the MasterKey App\"");
-                                        printf("\n");
+                                        system("echo \"Hi $USER, Welcome to MasterKey App\"");
+                                        printf("\n\n");
                                         sleep(1);
-                                        printf("The MasterKey App\n");
+                                        printf("              MasterKey\n");
                                         printf("\"One Password for All Your Passwords...\"");
                                         printf("\n\n");
                                         sleep(4);
-                                        system("echo © 2022 The Sudo Club");
+                                        system("echo \"       © 2022 The Sudoers Club\"");
                                         sleep(5);
                                         system("clear");
+
                                         reset();
                                         printf("Done\n");
                                         system("clear");
