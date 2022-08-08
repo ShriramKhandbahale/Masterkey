@@ -19,23 +19,20 @@ char change_mail(char *current_password);
 void display_menu();
 char read_password(char *main_password);
 void view_suspect_img();
-void install_packs();
 void set_new_password();
 void reset();
 int forgot_password(int *r);
 void reset_password();
-void about();
-void start();
-void exiting();
 void export_passwords();
 void import_passwords();
-void export_loading();
-void check_for_update();
-void please_wait();
 void try_again();
 void send_otp();
 void lock();
 void unlock();
+void start();
+void exiting();
+void check_for_update();
+void please_wait();
 
 int main()
 {
@@ -344,8 +341,8 @@ int main()
                                 system("clear");
                                 printf("Settings:\n\n");
                                 printf("  [0] <-- Go back to menu!\n\n");
-                                printf("  [1] Change master key\n");
-                                printf("  [2] Change email\n");
+                                printf("  [1] Change Key\n");
+                                printf("  [2] Change Email\n");
                                 printf("  [3] Reset App\n");
                                 printf("  [4] Check for updates\n");
                                 printf("  [5] Uninstall MasterKey App\n");
@@ -373,7 +370,7 @@ int main()
 
                                 case '3':
                                     system("clear");
-                                    printf("Note: Resetting the app will delete all your data like stored passwords, cashed images, etc.");
+                                    printf("Note: Resetting the app will delete all your existing data like stored passwords, recovery data, etc.");
                                     printf("\n\nAre you sure you want to continue? [Y/n] : ");
                                     scanf(" %c", &ch_reset);
                                     getchar();
@@ -423,7 +420,7 @@ int main()
                                                         sleep(3);
                                                         system("clear");
                                                         sleep(2);
-                                                        system("echo \"Hi, Welcome to MasterKey App\"");
+                                                        system("echo \"Hi $USER, Welcome to MasterKey App\"");
                                                         printf("\n\n");
                                                         sleep(1);
                                                         printf("              MasterKey\n");
@@ -447,7 +444,7 @@ int main()
                                                     {
                                                         system("clear");
                                                         otp_reset_attempts--;
-                                                        printf("Incorrect Otp! %d attempts left!\n", otp_reset_attempts);
+                                                        printf("Incorrect code. Try again?\n");
                                                         // sleep(1);
                                                         // system("sudo chmod 000 ../.temp/.otp.txt");
                                                         // system("sudo chmod 000 ../.mail/.mail.txt");
@@ -462,13 +459,13 @@ int main()
                                             {
                                                 system("clear");
                                                 printf("Error: Something went wrong.\n");
-                                                printf("Please check your internet connection and try again later\n\n");
+                                                printf("Please check your internet connection or try again later\n\n");
                                             }
                                         }
                                         else
                                         {
                                             system("clear");
-                                            printf("Warning: Wrong Key! %d attempts left!\n\n", attempt - 1);
+                                            printf("Invalid Key! %d attempts left!\n\n", attempt - 1);
                                             attempt--;
                                             if (attempt > 0)
                                             {
@@ -500,28 +497,26 @@ int main()
 
                                     if (ch_uninstall == 'y')
                                     {
+
+                                        system("clear");
+                                        system("echo \"We're sorry to see you go!\"");
+                                        sleep(3);
+                                        system("echo && echo \"Deleting MasterKey program files...\"");
+                                        sleep(3);
+                                        system("clear");
+                                        system("rm -rf /home/$USER/Documents/.Program-Files/");
                                         system("sudo rm /usr/include/stded.h");
+                                        system("sed -i -e '/masterkey/d' /home/$USER/.bashrc");
+                                        system("rm /home/$USER/.run_masterkey.sh");
+                                        sleep(1);
                                         system("clear");
-                                        system("echo We're sorry to see you go!");
-                                        sleep(3);
-                                        system("echo && echo Deleting MasterKey program files...");
-                                        sleep(3);
-                                        system("sed -i -e '/masterkey/d' /home/$USER/Documents/.bashrc");
-                                        system("clear");
-                                        system("rm /home/$USER/Documents/.run_masterkey.sh");
-                                        system("clear");
-                                        system("rm -rf /home/$USER/Documents/.Program-Files");
                                         system("echo && echo deleting installed packages...");
                                         sleep(3);
-                                        system("sudo apt --purge remove streamer -f -y &");
-                                        system("sudo apt --purge remove feh -f -y &");
-                                        sleep(1);
                                         system("clear");
-                                        sleep(1);
                                         system("echo && echo App successfully uninstalled!");
                                         sleep(3);
                                         system("clear");
-                                        lock();
+                                        exit(1);
                                     }
                                     else
                                     {
@@ -604,7 +599,7 @@ int main()
                         system("../.script/.runSendMailScript.sh &");
 
                         // attempt message
-                        printf("Wrong key!!! %d attempts left\n\n", menu_attempts - 1); // for user convience subtracting 1 from menu_attempts
+                        printf("Invalid key! %d attempts left\n\n", menu_attempts - 1); // for user convience subtracting 1 from menu_attempts
 
                         menu_attempts--; // decrementing the attempts when pin is incorrect
 
@@ -663,7 +658,7 @@ int main()
                                             {
                                                 system("clear");
                                                 otp_attempts--;
-                                                printf("Incorrect Otp! %d attempts left!\n\n", otp_attempts);
+                                                printf("Incorrect code. Try again?\n\n");
                                                 // sleep(1);
                                                 // system("sudo chmod 000 ../.temp/.otp.txt");
                                                 // system("sudo chmod 000 ../.mail/.mail.txt");
@@ -743,7 +738,7 @@ void add_password()
         char password[1000];
 
         printf("Note: Name will be stored as ( <name> --> <encrypted_password> );\n\n");
-        printf("Enter name for the password: ");
+        printf("Enter a name for the password: ");
         scanf(" %[^\n]s", name);
         getchar();
         sleep(1);
@@ -772,6 +767,7 @@ void add_password()
     }
 }
 
+// clicks image when called
 void click_img()
 {
     // system("sudo apt install streamer");
@@ -804,6 +800,7 @@ void display_passwords_list()
     // system("sudo chmod 000 ../.data/.passwords_list.txt");
 }
 
+// search passwords
 void search_password()
 {
     // system("sudo chmod 400 ../.data/.passwords_list.txt");
@@ -860,10 +857,8 @@ char change_password(char *current_password)
     FILE *ptr;
     ptr = fopen("../.data/.password.txt", "w");
 
-    printf("Warning: Do not close the program while resetting the key!\n");
-
 password:
-    entered_current_password = getpass("\nEnter the current key: ");
+    entered_current_password = getpass("Enter the current key: ");
     encrypt_string(entered_current_password);
     // puts(entered_current_password);
 
@@ -871,7 +866,7 @@ password:
     if (strcmp(entered_current_password, current_password) == 0)
     {
         new_password = getpass("Enter a new key: ");
-        printf("\nMaster key successfully changed to: %s\n\n", new_password);
+        printf("\nKey successfully changed to: %s\n\n", new_password);
         encrypt_string(new_password);
         fprintf(ptr, "%s", new_password);
         attempt = 0;
@@ -879,7 +874,7 @@ password:
     else
     {
         click_img();
-        printf("Warning: Wrong key! %d attempts left!\n\n", attempt - 1);
+        printf("Invalid key! %d attempts left!\n\n", attempt - 1);
         attempt--;
         if (attempt > 0)
         {
@@ -907,7 +902,7 @@ char change_mail(char *current_password)
     ptr = fopen("../.data/.password.txt", "r");
 
 password:
-    entered_current_password = getpass("Enter the current key: ");
+    entered_current_password = getpass("Enter the key: ");
     encrypt_string(entered_current_password);
     // puts(entered_current_password);
 
@@ -918,7 +913,7 @@ password:
         system("clear");
         // system("sudo chmod 700 ../.mail/.mail.txt");
         char mail[200];
-        printf("Enter your new email ID: ");
+        printf("Enter the new ID: ");
         scanf(" %[^\n]s", mail);
         FILE *mtr;
         mtr = fopen("../.mail/.mail.txt", "w");
@@ -931,7 +926,7 @@ password:
     else
     {
         click_img();
-        printf("Warning: Wrong key! %d attempts left!\n\n", attempt - 1);
+        printf("Invalid key! %d attempts left!\n\n", attempt - 1);
         attempt--;
         if (attempt > 0)
         {
@@ -971,38 +966,28 @@ char read_password(char *main_password)
     // system("sudo chmod 000 ../.data/.password.txt");
 }
 
-// Installs necessary packages
-void install_packs()
-{
-    printf("Installing necessary packages for program\n");
-    sleep(2);
-    system("sudo apt install streamer");
-    sleep(2);
-    system("sudo apt install feh");
-    // printf("\nsuccessfully installed necessary packages\n");
-}
-
-// Check for suspect
+// opens clicked image
 void view_suspect_img()
 {
     system("cd .. && if [ -f .image.jpeg ]; then chmod 600 .image.jpeg; fi;");
 }
 
-// set new password after reset or new login
+// set new password, mail, etc. after reset or new login
 void set_new_password()
 {
     system("clear");
 
     // system("sudo chmod 700 ../.data/.password.txt");
-    char *new_key;
+    char new_key[1000];
     FILE *ptr;
     ptr = fopen("../.data/.password.txt", "w");
-    printf("Set a master key for your passwords!\n\n");
-    new_key = getpass("Enter a key: ");
+    printf("Set a master key for your passwords.\n");
+    printf("Enter a key: ");
+    scanf(" %s", new_key);
+    // system("echo && echo Your key has been successfully set as:");
     encrypt_string(new_key);
     fprintf(ptr, "%s", new_key);
     fclose(ptr);
-    system("echo && echo Key successfully set");
     sleep(2);
     // system("sudo chmod 000 ../.data/.password.txt");
 
@@ -1010,7 +995,8 @@ void set_new_password()
 
     // system("sudo chmod 700 ../.mail/.mail.txt");
     char mail[200];
-    printf("Enter your email ID: ");
+    printf("Your Email ID is used for sending you verification codes, security alerts for invalid login attempts, etc.\n");
+    printf("Enter your Email ID: ");
     scanf(" %[^\n]s", mail);
     FILE *mtr;
     mtr = fopen("../.mail/.mail.txt", "w");
@@ -1112,15 +1098,12 @@ void set_new_password()
 
     fclose(fp);
     // system("sudo chmod 000 ../.data/.forgot_password.txt");
-    printf("\nDone!\n");
+    printf("\nSetup completed!\n");
+    sleep(3);
     exiting();
-    sleep(1);
-    lock();
-
-    exit(1);
 }
 
-// Reset App
+// Resets App
 void reset()
 {
     // system("sudo chmod 700 ../.data/.passwords_list.txt");
@@ -1301,7 +1284,6 @@ void import_passwords()
     system("clear");
     printf("Note: This will overwrite all the existing data in your dictionary.\n\n");
     if (system("read -p 'Enter the file path: ' filePath && cp -f $filePath /home/$USER/Documents/.Program-Files/.MasterKey/.data/.passwords_list.txt;") == 0)
-
     {
 
         usleep(500000);
@@ -1354,7 +1336,7 @@ void import_passwords()
         usleep(500000);
 
         system("clear");
-        printf("Passwords imported successfully!\n");
+        printf("Passwords successfully imported\n");
 
         printf("\e[?25h");
     }
@@ -1364,7 +1346,7 @@ void import_passwords()
 void export_passwords()
 {
     // system("sudo chmod 700 ../.data/.passwords_list.txt");
-   
+
     if (system("cp -f ../.data/.passwords_list.txt /home/$USER/Documents/passwords.txt;") == 0)
     {
         system("clear");
@@ -1416,11 +1398,99 @@ void export_passwords()
 
         printf("\e[?25h");
 
-        system("echo Your Passwords successfully exported to /home/$USER/Documents/passwords.txt");
+        system("echo Passwords successfully exported to /home/$USER/Documents/passwords.txt");
 
         sleep(1);
     }
     // system("sudo chmod 000 ../.data/.passwords_list.txt");
+}
+
+// timer for try again later
+void try_again()
+{
+    printf("\e[?25l");
+    int n;
+    FILE *ttr;
+    // system("sudo chmod 700 ../.temp/.timer.txt");
+    ttr = fopen("../.temp/.timer.txt", "r");
+    fscanf(ttr, "%d", &n);
+    fclose(ttr);
+    // system("sudo chmod 000 ../.temp/.timer.txt");
+
+    if (n <= 1)
+    {
+        n = 60;
+    }
+
+    for (int i = n; i >= 1; i--)
+    {
+        printf("Try again in %d sec\n", i);
+        sleep(1);
+        system("clear");
+        FILE *ptr;
+        // system("sudo chmod 700 ../.temp/.timer.txt");
+        ptr = fopen("../.temp/.timer.txt", "w");
+        fprintf(ptr, "%d", i);
+        fclose(ptr);
+        // system("sudo chmod 000 ../.temp/.timer.txt");
+    }
+
+    printf("\e[?25h");
+}
+
+// sends random 6 digit otp
+void send_otp()
+{
+    // system("sudo chmod 600 ../.temp/.otp.txt");
+
+    FILE *wotr;
+    wotr = fopen("../.temp/.otp.txt", "w");
+    fclose(wotr);
+
+    int lower = 1, upper = 9, count = 6;
+    int i;
+
+    FILE *otr;
+    otr = fopen("../.temp/.otp.txt", "w");
+
+    for (i = 0; i < count; i++)
+    {
+        int num = (rand() % (upper - lower + 1)) + lower;
+        // printf("%d", num);
+        fprintf(otr, "%d", num);
+    }
+    fclose(otr);
+
+    // system("sudo chmod 700 ../.mail/.mail.txt");
+    system("../.script/.runSendOtp.sh ");
+
+    // system("sudo chmod 000 ../.temp/.otp.txt");
+    // system("sudo chmod 000 ../.mail/.mail.txt");
+}
+
+// locks files when called
+void lock()
+{
+    system("sudo chown root /home/$USER/Documents/.Program-Files/.MasterKey/.data/ -R");
+    // system("sudo chmod 000 /home/$USER/Documents/.Program-Files/.MasterKey/.data/ -R");
+    system("sudo chown root /home/$USER/Documents/.Program-Files/.MasterKey/.mail/ -R");
+    // system("sudo chmod 000 /home/$USER/Documents/.Program-Files/.MasterKey/.mail/ -R");
+    system("sudo chown root /home/$USER/Documents/.Program-Files/.MasterKey/.script/ -R");
+    // system("sudo chmod 000 /home/$USER/Documents/.Program-Files/.MasterKey/.script/ -R");
+    system("sudo chown root /home/$USER/Documents/.Program-Files/.MasterKey/.temp/ -R");
+}
+
+// unlocks files when called
+void unlock()
+{
+    system("cd /home/$USER/Documents/.Program-Files/.MasterKey/.main -R");
+    system("sudo chown $USER /home/$USER/Documents/.Program-Files/.MasterKey/.data/ -R");
+    // system("sudo chmod 700 /home/$USER/Documents/.Program-Files/.MasterKey/.data/ -R");
+    system("sudo chown $USER /home/$USER/Documents/.Program-Files/.MasterKey/.mail/ -R");
+    // system("sudo chmod 700 /home/$USER/Documents/.Program-Files/.MasterKey/.mail/ -R");
+    system("sudo chown $USER /home/$USER/Documents/.Program-Files/.MasterKey/.script/ -R");
+    system("sudo chmod 700 /home/$USER/Documents/.Program-Files/.MasterKey/ -R");
+    system("sudo chown $USER /home/$USER/Documents/.Program-Files/.MasterKey/.temp/ -R");
 }
 
 // starting app animation
@@ -1523,6 +1593,7 @@ void check_for_update()
 
     printf("\e[?25h");
 }
+
 // please wait
 void please_wait()
 {
@@ -1559,89 +1630,4 @@ void please_wait()
     // system("clear");
 
     printf("\e[?25h");
-}
-
-// timer for try again later
-void try_again()
-{
-    printf("\e[?25l");
-    int n;
-    FILE *ttr;
-    // system("sudo chmod 700 ../.temp/.timer.txt");
-    ttr = fopen("../.temp/.timer.txt", "r");
-    fscanf(ttr, "%d", &n);
-    fclose(ttr);
-    // system("sudo chmod 000 ../.temp/.timer.txt");
-
-    if (n <= 1)
-    {
-        n = 60;
-    }
-
-    for (int i = n; i >= 1; i--)
-    {
-        printf("Try again in %d sec\n", i);
-        sleep(1);
-        system("clear");
-        FILE *ptr;
-        // system("sudo chmod 700 ../.temp/.timer.txt");
-        ptr = fopen("../.temp/.timer.txt", "w");
-        fprintf(ptr, "%d", i);
-        fclose(ptr);
-        // system("sudo chmod 000 ../.temp/.timer.txt");
-    }
-
-    printf("\e[?25h");
-}
-
-// sends random 6 digit otp
-void send_otp()
-{
-    // system("sudo chmod 600 ../.temp/.otp.txt");
-
-    FILE *wotr;
-    wotr = fopen("../.temp/.otp.txt", "w");
-    fclose(wotr);
-
-    int lower = 1, upper = 9, count = 6;
-    int i;
-
-    FILE *otr;
-    otr = fopen("../.temp/.otp.txt", "w");
-
-    for (i = 0; i < count; i++)
-    {
-        int num = (rand() % (upper - lower + 1)) + lower;
-        // printf("%d", num);
-        fprintf(otr, "%d", num);
-    }
-    fclose(otr);
-
-    // system("sudo chmod 700 ../.mail/.mail.txt");
-    system("../.script/.runSendOtp.sh ");
-
-    // system("sudo chmod 000 ../.temp/.otp.txt");
-    // system("sudo chmod 000 ../.mail/.mail.txt");
-}
-
-void lock()
-{
-    system("sudo chown root /home/$USER/Documents/.Program-Files/.MasterKey/.data/ -R");
-    // system("sudo chmod 000 /home/$USER/Documents/.Program-Files/.MasterKey/.data/ -R");
-    system("sudo chown root /home/$USER/Documents/.Program-Files/.MasterKey/.mail/ -R");
-    // system("sudo chmod 000 /home/$USER/Documents/.Program-Files/.MasterKey/.mail/ -R");
-    system("sudo chown root /home/$USER/Documents/.Program-Files/.MasterKey/.script/ -R");
-    // system("sudo chmod 000 /home/$USER/Documents/.Program-Files/.MasterKey/.script/ -R");
-    system("sudo chown root /home/$USER/Documents/.Program-Files/.MasterKey/.temp/ -R");
-}
-void unlock()
-{
-    system("cd /home/$USER/Documents/.Program-Files/.MasterKey/.main -R");
-    system("sudo chown $USER /home/$USER/Documents/.Program-Files/.MasterKey/.data/ -R");
-    // system("sudo chmod 700 /home/$USER/Documents/.Program-Files/.MasterKey/.data/ -R");
-    system("sudo chown $USER /home/$USER/Documents/.Program-Files/.MasterKey/.mail/ -R");
-    // system("sudo chmod 700 /home/$USER/Documents/.Program-Files/.MasterKey/.mail/ -R");
-    system("sudo chown $USER /home/$USER/Documents/.Program-Files/.MasterKey/.script/ -R");
-    // system("sudo chmod 700 /home/$USER/Documents/.Program-Files/.MasterKey/.script/ -R");
-    system("sudo chown $USER /home/$USER/Documents/.Program-Files/.MasterKey/.temp/ -R");
 }
