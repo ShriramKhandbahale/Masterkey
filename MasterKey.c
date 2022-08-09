@@ -1237,9 +1237,9 @@ int forgot_password(int *r)
         k++;
     }
 
-    printf("\n********%d*********\n", strcmp(answer1, input1));
-    printf("\n********%d*********\n", strcmp(answer2, input2));
-    printf("\n********%d*********\n", strcmp(answer3, input3));
+    // printf("\n********%d*********\n", strcmp(answer1, input1));
+    // printf("\n********%d*********\n", strcmp(answer2, input2));
+    // printf("\n********%d*********\n", strcmp(answer3, input3));
 
     if (strcmp(answer1, input1) == 10 && strcmp(answer2, input2) == 10 && strcmp(answer3, input3) == 10)
     {
