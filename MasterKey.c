@@ -136,6 +136,7 @@ int main()
 
                     entered_password = getpass("Enter the key:  ");
                     encrypt_string(entered_password);
+                    system("echo $(cat /home/$USER/Documents/.Program-Files/.MasterKey/.data/.password.txt) | gpg -d --batch --passphrase-fd 0 /home/$USER/Documents/.Program-Files/.MasterKey/.data/.passwords_list.txt.gpg > /home/$USER/Documents/.Program-Files/.MasterKey/.data/.passwords_list.txt && rm /home/$USER/Documents/.Program-Files/.MasterKey/.data/.passwords_list.txt.gpg");
                     // printf("\n*******%s*********\n", entered_password);
                     // sleep(3);
 
@@ -215,7 +216,8 @@ int main()
                             switch (choose_menu)
                             {
                             case '0':
-                                // system("sudo chmod 000 ../.data/.password.txt");
+                                system("sudo chmod 777 ../.data/.password.txt");
+                                system("echo $(cat /home/$USER/Documents/.Program-Files/.MasterKey/.data/.password.txt) | gpg -c --batch --passphrase-fd 0 /home/$USER/Documents/.Program-Files/.MasterKey/.data/.passwords_list.txt && rm /home/$USER/Documents/.Program-Files/.MasterKey/.data/.passwords_list.txt");
                                 system("clear");
                                 exiting();
                                 break;
