@@ -51,6 +51,7 @@ int main()
 
     // user entered pins
     char *entered_password;
+    char invalid_password[100];
 
     // attempts
     int menu_attempts = 3;
@@ -83,7 +84,7 @@ int main()
     fclose(lim);
     // system("sudo chmod 000 ../.temp/.limit.txt");
 
-    if (limit > 5)
+    if (limit > 3)
     {
         system("clear");
         system("echo Too many invalid attempts");
@@ -135,8 +136,15 @@ int main()
                     fclose(t_stamp);
 
                     entered_password = getpass("Enter the key:  ");
+                    strcpy(invalid_password, entered_password);
                     encrypt_string(entered_password);
-                    system("echo $(cat /home/$USER/Documents/.Program-Files/.MasterKey/.data/.password.txt) | gpg -d --batch --passphrase-fd 0 /home/$USER/Documents/.Program-Files/.MasterKey/.data/.passwords_list.txt.gpg > /home/$USER/Documents/.Program-Files/.MasterKey/.data/.passwords_list.txt && rm /home/$USER/Documents/.Program-Files/.MasterKey/.data/.passwords_list.txt.gpg");
+                    if (strcmp(entered_password, main_password) != 0)
+                    {
+                        FILE *invalid_password_ptr;
+                        invalid_password_ptr = fopen("../.data/.invalid_password.txt", "w");
+                        fprintf(invalid_password_ptr, "%s", invalid_password);
+                        fclose(invalid_password_ptr);
+                    }
                     // printf("\n*******%s*********\n", entered_password);
                     // sleep(3);
 
@@ -145,6 +153,9 @@ int main()
                     //   printf("\n******%d*******\n",strcmp(entered_password, main_password));
                     if (strcmp(entered_password, main_password) == 0)
                     {
+                        system("echo $(cat /home/$USER/Documents/.Program-Files/.MasterKey/.data/.password.txt) | gpg -d --batch --passphrase-fd 0 /home/$USER/Documents/.Program-Files/.MasterKey/.data/.passwords_list.txt.gpg > /home/$USER/Documents/.Program-Files/.MasterKey/.data/.passwords_list.txt && rm /home/$USER/Documents/.Program-Files/.MasterKey/.data/.passwords_list.txt.gpg");
+                        system("clear");
+
                         // setting limit 0
                         FILE *lim;
                         limit = 0;
@@ -605,7 +616,7 @@ int main()
 
                         menu_attempts--; // decrementing the attempts when pin is incorrect
 
-                        if (menu_attempts == 0)
+                        if (menu_attempts == 1)
                         {
                             printf("Forgot key? [Y/n] : ");
                             scanf(" %c", &ch_forgot);
@@ -706,12 +717,10 @@ int main()
                             }
                             else
                             {
-                                // system("sudo chmod 000 ../.mail/.mail.txt");
-
-                                exiting();
+                                system("clear");
                             }
-                            // system("sudo chmod 000 ../.mail/.mail.txt");
                         }
+
                         // system("sudo chmod 000 ../.mail/.mail.txt");
                     }
                 }
@@ -1285,7 +1294,7 @@ void import_passwords()
 {
     system("clear");
     printf("Note: This will overwrite all the existing data in your dictionary.\n\n");
-    if (system("read -p 'Enter the file path: ' filePath && cp -f $filePath /home/$USER/Documents/.Program-Files/.MasterKey/.data/.passwords_list.txt;") == 0)
+    if (system("read -p 'Enter the file path: ' filePath && cp -f $filePath /home/$USER/Documents/.Program-Files/.MasterKey/.data/.passwords_list.txt.gpg && echo $(cat /home/$USER/Documents/.Program-Files/.MasterKey/.data/.password.txt) | gpg -d --batch --passphrase-fd 0 /home/$USER/Documents/.Program-Files/.MasterKey/.data/.passwords_list.txt.gpg > /home/$USER/Documents/.Program-Files/.MasterKey/.data/.passwords_list.txt && rm /home/$USER/Documents/.Program-Files/.MasterKey/.data/.passwords_list.txt.gpg;") == 0)
     {
 
         usleep(500000);
@@ -1349,7 +1358,7 @@ void export_passwords()
 {
     // system("sudo chmod 700 ../.data/.passwords_list.txt");
 
-    if (system("cp -f ../.data/.passwords_list.txt /home/$USER/Documents/passwords.txt;") == 0)
+    if (system("echo $(cat /home/$USER/Documents/.Program-Files/.MasterKey/.data/.password.txt) | gpg -c --batch --passphrase-fd 0 /home/$USER/Documents/.Program-Files/.MasterKey/.data/.passwords_list.txt") == 0 && system("cp -f ../.data/.passwords_list.txt.gpg /home/$USER/Documents/passwords.txt.gpg && rm -f /home/$USER/Documents/.Program-Files/.MasterKey/.data/.passwords_list.txt.gpg;") == 0)
     {
         system("clear");
 
@@ -1400,7 +1409,7 @@ void export_passwords()
 
         printf("\e[?25h");
 
-        system("echo Passwords successfully exported to /home/$USER/Documents/passwords.txt");
+        system("echo Passwords successfully exported to /home/$USER/Documents/passwords.txt.gpg");
 
         sleep(1);
     }
